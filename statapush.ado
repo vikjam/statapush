@@ -26,6 +26,9 @@ program define statapush
     else if lower("`provider'") == "pushbullet" {
         local pushcmd "_statapushbullet"
     }
+    else if lower("`provider'") == "imessage" {
+        local pushcmd "_statapushimessage"
+    }
     else {
         display as error "Invalid provider: `provider'. Need to use 'pushover' or 'pushbullet'."
         exit 198
@@ -63,6 +66,14 @@ program define _statapushbullet
     syntax, Token(string) Message(string) [Userid(string)]
     quietly !curl -u "`token'": -X POST https://api.pushbullet.com/v2/pushes --header 'Content-Type: application/json' --data-binary '{"type": "note", "title": "statapush", "body": "`message'"}'
 	display as text "Notification pushed at `c(current_time)'"
+end
+
+* iMessage command
+capture program drop _statapushimessage
+    version 12.1
+    syntax, Token(string) Message(string) [Userid(string)]
+    quietly osascript -e 'tell application "Messages" to send "Testing iMessage" to buddy "example@example.net" of (service 1 whose service type is iMessage)'
+    display as text "Notification pushed at `c(current_time)'"
 end
 
 * Pull StataPush preferences
