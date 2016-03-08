@@ -70,9 +70,10 @@ end
 
 * iMessage command
 capture program drop _statapushimessage
+program define _statapushimessage
     version 12.1
     syntax, Token(string) Message(string) [Userid(string)]
-    quietly osascript -e 'tell application "Messages" to send "Testing iMessage" to buddy "example@example.net" of (service 1 whose service type is iMessage)'
+    quietly shell osascript -e 'tell application "Messages" to send "`message'" to buddy "`token'" of (service 1 whose service type is iMessage)'
     display as text "Notification pushed at `c(current_time)'"
 end
 
